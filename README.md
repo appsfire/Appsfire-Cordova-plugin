@@ -31,7 +31,7 @@ In order to get started, please be sure you've done the following:
 
 1. Registered on [Appsfire website](http://www.appsfire.com/) and accepted our Terms Of Use
 2. Registered your app on our [Dashboard](http://dashboard.appsfire.com/) and generated an SDK key for your app
-3. Grabbed our latest version of the SDK, either using CocoaPods, or downloading the SDK from our [Dashboard](http://dashboard.appsfire.com/app/doc)
+3. Grabbed our latest version of the SDK and Cordova plugin from our [Dashboard](http://dashboard.appsfire.com/app/doc)
 
 ### Using the local folder
 ```

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="com.appsfire.appsfiresdk-plugin"
+    version="1.0.2">
+
+    <name>Appsfire SDK Plugin</name>
+    <description>Cordova plugin for the Appsfire SDK</description>
+    <author>Ali Karagoz</author>
+	<license>BSD</license>
+
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <js-module src="www/appsfire.js" name="AppsfireSDK">
+        <clobbers target="AppsfireSDK" />
+    </js-module>
+
+    <access origin="*" />
+
+    <!-- iOS -->
+    <platform name="ios">
+
+        <config-file target="config.xml" parent="/*">
+          <feature name="AppsfireSDK">
+            <param name="ios-package" value="CDVAppsfireSDK"/>
+          </feature>
+        </config-file>
+
+        <!-- Plugin -->
+        <header-file src="src/ios/CDVAppsfireSDK.h"/>
+        <source-file src="src/ios/CDVAppsfireSDK.m" />
+
+        <!-- Appsfire SDK Header Files -->
+        <header-file src="src/ios/AppsfireSDK.h" />
+        <header-file src="src/ios/AppsfireSDK+Additions.h" />
+        <header-file src="src/ios/AppsfireAdSDK.h" />
+        <header-file src="src/ios/AppsfireSDKConstants.h" />
+
+        <!-- Appsfire Timer View -->
+        <header-file src="src/ios/appsfireAdTimerView/AppsfireAdTimerView.h" />
+        <source-file src="src/ios/appsfireAdTimerView/AppsfireAdTimerView.m" />
+
+        <!-- Appsfire SDK Static Library -->
+        <source-file src="src/ios/libAppsfireSDK.a" framework="true" />
+
+        <!-- iOS Frameworks -->
+        <framework src="Accelerate.framework" />
+        <framework src="AdSupport.framework" weak="true" />
+        <framework src="CoreGraphics.framework" />
+        <framework src="QuartzCore.framework" />
+        <framework src="Security.framework" />
+        <framework src="StoreKit.framework" weak="true" />
+        <framework src="SystemConfiguration.framework" />
+
+    </platform>
+
+</plugin>
