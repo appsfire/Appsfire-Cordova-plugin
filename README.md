@@ -11,7 +11,7 @@ The plugin of Appsfire SDK currently works only for iOS. However its integration
 
 This documentation is a brief introduction to Appsfire SDK for Cordova. We recommend you to take a look on the general documentation that you can find in your dashboard. Most of methods were implemented in Unity. If you have a problem during the integration, don't hesitate to contact our team at <a href="mailto:support@appsfire.com">support@appsfire.com</a>.
 
-We recommend you to read the integration reference documentation that you find at this url <a href="http://docs.appsfire.com/" target="_blank">http://docs.appsfire.com/</a>.
+We recommend you to read the integration reference documentation that you find at this url [URL](http://docs.appsfire.com/).
 
 ## Getting Started with Appsfire
 The Appsfire SDK is the cornerstone of the Appsfire network.
