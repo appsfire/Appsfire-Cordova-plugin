@@ -1,11 +1,37 @@
-#Appsire SDK Cordova Plugin
+Appsire SDK Cordova Plugin
+================
 This document describes the installation and usage of the Cordova plugin for the Appsfire SDK.
 
-##Requirements
+## Requirements
 - Appsfire SDK >= 2.2
 - Cordova CLI >= 3.0
 
+## Introduction
+The plugin of Appsfire SDK currently works only for iOS. However its integration shouldn't affect the build on any other platform.
+
+This documentation is a brief introduction to Appsfire SDK for Unity. We recommend you to take a look on the general documentation that you can find in your dashboard. Most of methods were implemented in Unity. If you have a problem during the integration, don't hesitate to contact our team at <a href="mailto:support@appsfire.com">support@appsfire.com</a>.
+
+We recommend you to read the integration reference documentation that you find at this url <a href="http://docs.appsfire.com/" target="_blank">http://docs.appsfire.com/</a>.
+
+## Getting Started with Appsfire
+The Appsfire SDK is the cornerstone of the Appsfire network.
+
+It provides the functionalities for monetizing your mobile application: it facilitates inserting native mobile ads into you application using native APIs.
+You can choose one of our ad units (Sushi, Uramaki).
+
+It also helps you engage with your users by sending push and in-app notifications.
+
+- Please visit our [website](http://appsfire.com) to learn more about our ad units and products.<br />
+- Please visit our [iOS online documentation](http://docs.appsfire.com/sdk/ios/integration-reference/Introduction) to learn how to integrate our SDK into your iOS app.<br />
+- Check out the full [iOS API specification](http://docs.appsfire.com/sdk/ios/api-reference/) to have a detailed understanding of our iOS SDK.
+
 ## Installation
+
+In order to get started, please be sure you've done the following:
+
+1. Registered on [Appsfire website](http://www.appsfire.com/) and accepted our Terms Of Use
+2. Registered your app on our [Dashboard](http://dashboard.appsfire.com/) and generated an SDK key for your app
+3. Grabbed our latest version of the SDK, either using CocoaPods, or downloading the SDK from our [Dashboard](http://dashboard.appsfire.com/app/doc)
 
 ### Using the local folder
 ```
@@ -14,6 +40,122 @@ cordova prepare
 ```
 
 ## API Reference
+
+### Monetization
+#### Check if the ad library is initialized
+*Method:*  
+`adsdk_prepare()`
+
+*Method*  
+```js
+af.adsdk_prepare();
+```
+
+#### Cheking if the ad library is initialized
+*Method:*  
+`adsdk_isInitialized(callback)`
+
+*Usage:*  
+```js
+af.adsdk_isInitialized(function(isInitialized) {
+    console.log('Is Ad SDK initialized: ' + isInitialized);
+});
+```
+#### Cheking if ads have been loaded from the web service
+*Method:*  
+`adsdk_areAdsLoaded(callback)`
+
+*Usage:*  
+```js
+af.adsdk_areAdsLoaded(function(areAdsLoaded){
+    console.log('Are Ads loaded: ' + areAdsLoaded);
+});
+```
+#### Using the in-app overlay
+*Method:*  
+`adsdk_setUseInAppDownloadWhenPossible(userInAppDownloadWhenPossible, successCallback, failureCallback)`
+
+*Arguments:*  
+`userInAppDownloadWhenPossible` : Boolean to use the In-App Download native overlay (as opposed to clicking out to the App Store). (Default is `true`)
+
+*Usage:*  
+```js
+af.adsdk_setUseInAppDownloadWhenPossible(
+    true,
+    function(){
+        console.log('Using In App Download.');
+    },
+    function(){
+        console.log('Failed to set In App Download usage.');
+    });
+```
+
+#### Test your implementation via “debug” mode
+*Method:*  
+`adsdk_setDebugModeEnabled(debugModeEnabled, successCallback, failureCallback)` (Default is `false`)
+
+*Arguments:*  
+`debugModeEnabled`: Boolean to activate/deactivate debug mode. It's useful if you want to test your implementation because it will generate test ads. **Don't forget to de-activate in production!** (Default is `false`)
+
+*Usage:*  
+```js
+af.adsdk_setDebugModeEnabled(
+    false,
+    function(){
+        console.log('Debug mode set to off.');
+    },
+    function(){
+        console.log('Failed to set debug mode.');
+    });
+```
+
+#### Request a modal ad
+*Method:*  
+`adsdk_requestModalAd(modalType, shouldUseTimer)`
+
+*Arguments:*  
+-`modalType`: String which allows you to choose between the `sushi` and `uramaki` formats. (Default is `sushi`).
+-`shouldUseTimer`: Boolean to activate/deactivate the timer before showing the ad. (Default is `false`).
+
+*Usage:*  
+```js
+af.ad.adsdk_requestModalAd('sushi', false);
+```
+
+#### Check if there is a modal ad to display
+*Method:*  
+`adsdk_isThereAModalAdAvailable(modalType, callback)`
+
+*Arguments:*  
+-`modalType`: String which correspond to the ad unit format you want to check, should be `sushi` or `uramaki` ad formats. (Default is `sushi`).
+
+*Usage:*  
+```js
+af.adsdk_isThereAModalAdAvailable('uramaki', function(isThereAModalAdAvailable){
+    console.log('Is there a modal Ad available: ' + isThereAModalAdAvailable);
+});
+```
+
+#### Cancel a pending request
+*Method:*  
+`adsdk_cancelPendingAdModalRequest()`
+
+*Usage:*  
+```js
+af.adsdk_cancelPendingAdModalRequest();
+```
+
+#### Check if a modal ad is currently displayed
+*Method:*  
+`adsdk_isModalAdDisplayed(callback)`
+
+*Usage:*  
+```js
+af.adsdk_isModalAdDisplayed(function(isModalAdDisplayed){
+    console.log('Is modal Ad displayed: ' + isModalAdDisplayed);
+});
+```
+
 
 ###Engagement (Notification Wall & Feedback Form)
 #### Initialization of the SDK
@@ -299,119 +441,4 @@ af.sdk_getSessionID(function(sessionId) {
 *Usage:*  
 ```js
 af.sdk_resetCache();
-```
-
-### Monetization
-#### Check if the ad library is initialized
-*Method:*  
-`adsdk_prepare()`
-
-*Method*  
-```js
-af.adsdk_prepare();
-```
-
-#### Cheking if the ad library is initialized
-*Method:*  
-`adsdk_isInitialized(callback)`
-
-*Usage:*  
-```js
-af.adsdk_isInitialized(function(isInitialized) {
-    console.log('Is Ad SDK initialized: ' + isInitialized);
-});
-```
-#### Cheking if ads have been loaded from the web service
-*Method:*  
-`adsdk_areAdsLoaded(callback)`
-
-*Usage:*  
-```js
-af.adsdk_areAdsLoaded(function(areAdsLoaded){
-    console.log('Are Ads loaded: ' + areAdsLoaded);
-});
-```
-#### Using the in-app overlay
-*Method:*  
-`adsdk_setUseInAppDownloadWhenPossible(userInAppDownloadWhenPossible, successCallback, failureCallback)`
-
-*Arguments:*  
-`userInAppDownloadWhenPossible` : Boolean to use the In-App Download native overlay (as opposed to clicking out to the App Store). (Default is `true`)
-
-*Usage:*  
-```js
-af.adsdk_setUseInAppDownloadWhenPossible(
-    true,
-    function(){
-        console.log('Using In App Download.');
-    },
-    function(){
-        console.log('Failed to set In App Download usage.');
-    });
-```
-
-#### Test your implementation via “debug” mode
-*Method:*  
-`adsdk_setDebugModeEnabled(debugModeEnabled, successCallback, failureCallback)` (Default is `false`)
-
-*Arguments:*  
-`debugModeEnabled`: Boolean to activate/deactivate debug mode. It's useful if you want to test your implementation because it will generate test ads. **Don't forget to de-activate in production!** (Default is `false`)
-
-*Usage:*  
-```js
-af.adsdk_setDebugModeEnabled(
-    false,
-    function(){
-        console.log('Debug mode set to off.');
-    },
-    function(){
-        console.log('Failed to set debug mode.');
-    });
-```
-
-#### Request a modal ad
-*Method:*  
-`adsdk_requestModalAd(modalType, shouldUseTimer)`
-
-*Arguments:*  
--`modalType`: String which allows you to choose between the `sushi` and `uramaki` formats. (Default is `sushi`).
--`shouldUseTimer`: Boolean to activate/deactivate the timer before showing the ad. (Default is `false`).
-
-*Usage:*  
-```js
-af.ad.adsdk_requestModalAd('sushi', false);
-```
-
-#### Check if there is a modal ad to display
-*Method:*  
-`adsdk_isThereAModalAdAvailable(modalType, callback)`
-
-*Arguments:*  
--`modalType`: String which correspond to the ad unit format you want to check, should be `sushi` or `uramaki` ad formats. (Default is `sushi`).
-
-*Usage:*  
-```js
-af.adsdk_isThereAModalAdAvailable('uramaki', function(isThereAModalAdAvailable){
-    console.log('Is there a modal Ad available: ' + isThereAModalAdAvailable);
-});
-```
-
-#### Cancel a pending request
-*Method:*  
-`adsdk_cancelPendingAdModalRequest()`
-
-*Usage:*  
-```js
-af.adsdk_cancelPendingAdModalRequest();
-```
-
-#### Check if a modal ad is currently displayed
-*Method:*  
-`adsdk_isModalAdDisplayed(callback)`
-
-*Usage:*  
-```js
-af.adsdk_isModalAdDisplayed(function(isModalAdDisplayed){
-    console.log('Is modal Ad displayed: ' + isModalAdDisplayed);
-});
 ```
