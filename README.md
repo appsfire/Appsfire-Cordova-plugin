@@ -3,7 +3,7 @@ Appsire SDK Cordova Plugin
 This document describes the installation and usage of the Cordova plugin for the Appsfire SDK.
 
 ## Requirements
-- Appsfire SDK >= 2.2
+- Appsfire SDK >= 2.2.2
 - Cordova CLI >= 3.0
 
 ## Introduction
@@ -50,6 +50,26 @@ cordova prepare
 ```js
 af.adsdk_prepare();
 ```
+
+#### Enabling the features you want
+
+*Method:*
+`af.sdk_setFeatures(features)`
+
+*Arguments:*
+- `features`: Array of strings representing the features your want.
+- Possible values are:
+  - `AFSDKFeatureEngage`
+  - `AFSDKFeatureMonetization`
+  - `AFSDKFeatureTrack`
+
+*Usage:*
+```js
+// Set the features you need.
+// You need to call this before `sdk_connectWithApiKey`
+af.sdk_setFeatures(['AFSDKFeatureEngage', 'AFSDKFeatureMonetization']);
+```
+
 
 #### Cheking if the ad library is initialized
 *Method:*  

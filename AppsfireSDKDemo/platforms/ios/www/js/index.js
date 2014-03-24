@@ -7,8 +7,7 @@ var app = {
     document.addEventListener('deviceready', this.deviceReady, false);
   },
   deviceReady: function() {
-    // Connection to the API
-    var apiKey = 'YOUR_API_KEY';
+    
     var af = new AppsfireSDK();
 
     // When we receive the signal that an Ad is ready to be displayed, we
@@ -26,6 +25,13 @@ var app = {
       },
       false);
 
+    // Set the features you need.
+    af.sdk_setFeatures(['AFSDKFeatureEngage', 'AFSDKFeatureMonetization']);
+    
+    // Set your API key below.
+    var apiKey = 'YOUR_API_KEY';
+      
+    // Connection to the API.
     af.sdk_connectWithApiKey(
       apiKey,
       function() {
