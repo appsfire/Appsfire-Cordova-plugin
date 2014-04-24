@@ -1,10 +1,8 @@
-//
-//  AppsfireSDK+Push.h
-//  AppsfireSDKDemo
-//
-//  Created by Ali Karagoz on 30/12/2013.
-//
-//
+/*!
+ *  @header    AppsfireAdSDK+Additions.h
+ *  @abstract  Appsfire Advertising SDK Additions Header
+ *  @version   2.2.0
+ */
 
 #import "AppsfireSDK.h"
 

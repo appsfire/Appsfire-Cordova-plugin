@@ -1,34 +1,8 @@
+var argscheck = require('cordova/argscheck'),
+    utils = require('cordova/utils'),
+    exec = require('cordova/exec');
 
-/*
- Copyright 2010-2013 Appsfire SAS. All rights reserved.
-
- Redistribution and use in source and binary forms, without
- modification, are permitted provided that the following conditions are met:
-
- 1. Redistributions of source code must retain the above copyright notice, this
- list of conditions and the following disclaimer.
-
- 2. Redistributions in binaryform must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation
- and/or other materials provided withthe distribution.
-
- THIS SOFTWARE IS PROVIDED BY APPSFIRE SAS ``AS IS'' AND ANY EXPRESS OR
- IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- EVENT SHALL APPSFIRE SAS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
- var argscheck = require('cordova/argscheck'),
- utils = require('cordova/utils'),
- exec = require('cordova/exec');
-
- var AppsfireSDK = function() {
+var AppsfireSDK = function() {
     this.serviceName = "AppsfireSDK";
 };
 
@@ -37,6 +11,11 @@
 AppsfireSDK.prototype.sdk_connectWithApiKey = function(apiKey, successCallback, failureCallback) {
     if (typeof(apiKey) != 'string') apiKey = '';
     exec(successCallback, failureCallback, this.serviceName, 'sdk_connectWithApiKey', [apiKey]);
+};
+
+AppsfireSDK.prototype.sdk_setFeatures = function(features) {
+    if (typeof(features) != 'object') features = ['AFSDKFeatureEngage', 'AFSDKFeatureMonetization'];
+    exec(null, null, this.serviceName, 'sdk_setFeatures', [features]);
 };
 
 AppsfireSDK.prototype.sdk_isInitialized = function(successCallback) {
@@ -139,12 +118,15 @@ AppsfireSDK.prototype.adsdk_setDebugModeEnabled = function(debugModeEnabled, suc
     exec(successCallback, failureCallback, this.serviceName, 'adsdk_setDebugModeEnabled', [debugModeEnabled]);
 };
 
-AppsfireSDK.prototype.adsdk_requestModalAd = function(){
-    exec(null, null, this.serviceName, 'adsdk_requestModalAd', []);
+AppsfireSDK.prototype.adsdk_requestModalAd = function(modalType, shouldUseTimer) {
+    if (typeof(modalType) != 'string') modalType = 'sushi';
+    if (typeof(shouldUseTimer) != 'boolean') shouldUseTimer = 'false';
+    exec(null, null, this.serviceName, 'adsdk_requestModalAd', [modalType, shouldUseTimer]);
 };
 
-AppsfireSDK.prototype.adsdk_isThereAModalAdAvailable = function(callback) {
-    exec(callback, null, this.serviceName, 'adsdk_isThereAModalAdAvailable', []);
+AppsfireSDK.prototype.adsdk_isThereAModalAdAvailable = function(callback, modalType) {
+    if (typeof(modalType) != 'string') modalType = 'sushi';
+    exec(callback, null, this.serviceName, 'adsdk_isThereAModalAdAvailable', [modalType]);
 };
 
 AppsfireSDK.prototype.adsdk_cancelPendingAdModalRequest = function() {

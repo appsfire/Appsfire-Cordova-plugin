@@ -16,11 +16,11 @@
     <feature name="LocalStorage">
         <param name="ios-package" value="CDVLocalStorage" />
     </feature>
-    <feature name="AppsfireSDK">
-        <param name="ios-package" value="CDVAppsfireSDK" />
-    </feature>
     <feature name="Console">
         <param name="ios-package" value="CDVLogger" />
+    </feature>
+    <feature name="AppsfireSDK">
+        <param name="ios-package" value="CDVAppsfireSDK" />
     </feature>
     <name>AppsfireSDKDemo</name>
     <description>

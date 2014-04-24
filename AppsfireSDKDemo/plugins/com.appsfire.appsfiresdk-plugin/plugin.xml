@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="com.appsfire.appsfiresdk-plugin"
-    version="1.0.0">
+    version="1.0.4">
 
     <name>Appsfire SDK Plugin</name>
     <description>Cordova plugin for the Appsfire SDK</description>
@@ -9,7 +9,7 @@
 	<license>BSD</license>
 
     <engines>
-        <engine name="cordova" version=">=2.9.0" />
+        <engine name="cordova" version=">=3.0.0" />
     </engines>
 
     <js-module src="www/appsfire.js" name="AppsfireSDK">
@@ -33,6 +33,7 @@
 
         <!-- Appsfire SDK Header Files -->
         <header-file src="src/ios/AppsfireSDK.h" />
+        <header-file src="src/ios/AppsfireSDK+Additions.h" />
         <header-file src="src/ios/AppsfireAdSDK.h" />
         <header-file src="src/ios/AppsfireSDKConstants.h" />
 
@@ -44,10 +45,11 @@
         <source-file src="src/ios/libAppsfireSDK.a" framework="true" />
 
         <!-- iOS Frameworks -->
-        <framework src="Accelerate.framework" weak="true" />
+        <framework src="Accelerate.framework" />
         <framework src="AdSupport.framework" weak="true" />
         <framework src="CoreGraphics.framework" />
         <framework src="QuartzCore.framework" />
+        <framework src="Security.framework" />
         <framework src="StoreKit.framework" weak="true" />
         <framework src="SystemConfiguration.framework" />
 

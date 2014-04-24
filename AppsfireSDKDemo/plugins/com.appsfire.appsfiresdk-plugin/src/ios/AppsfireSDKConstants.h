@@ -1,7 +1,7 @@
 /*!
  *  @header    AppsfireSDKConstants.h
  *  @abstract  Appsfire SDK Constants Header
- *  @version   2.1.0
+ *  @version   2.3.0
  */
 
 /*!
@@ -9,27 +9,45 @@
  *  @since 2.0
  */
 
-/** @notification EngageNotification sdk is initializing */
+/** sdk is initializing */
 #define kAFSDKIsInitializing                @"AFSDKisInitializing"
 
-/** @notification EngageNotification sdk is initialized */
+/** sdk is initialized */
 #define kAFSDKIsInitialized                 @"AFSDKisInitialized"
 
-/** @notification EngageNotification notifications count was updated */
+/** notifications count was updated */
 #define kAFSDKNotificationsNumberChanged    @"AFSDKNotificationsNumberChanged"
 
-/** @notification EngageNotification dictionary (localized strings) is updated */
+/** dictionary (localized strings) is updated */
 #define kAFSDKDictionaryUpdated             @"AFSDKdictionaryUpdated"
 
-/** @notification EngageNotification panel (for notifications or feedback) was presented */
+/** panel (for notifications or feedback) was presented */
 #define kAFSDKPanelWasPresented             @"AFSDKPanelWasPresented"
 
-/** @notification EngageNotification panel (for notifications or feedback) was dismissed */
+/** panel (for notifications or feedback) was dismissed */
 #define kAFSDKPanelWasDismissed             @"AFSDKPanelWasDismissed"
 
 
 /*!
- *  @enum EngageEnum Enum for deciding appsfire sdk presentation style
+ *  @brief Enum for specifying features you plan to use.
+ *
+ *  @note By specifying us the list of features you plan using, you'll allow us to optimize the user experience and the web-services calls.
+ *  Default value is all features.
+ *
+ *  @since 2.2
+ */
+typedef NS_OPTIONS(NSUInteger, AFSDKFeature) {
+    /** Engage feature */
+    AFSDKFeatureEngage          = 1 << 0,
+    /** Monetization feature */
+    AFSDKFeatureMonetization    = 1 << 1,
+    /** Track feature */
+    AFSDKFeatureTrack           = 1 << 2
+};
+
+
+/*!
+ *  @brief Enum for deciding appsfire sdk presentation style.
  *
  *  @note Embedded display allows users to see your application behind.
  *  Fullscreen is like its name, users won't see your application and will be immersed into the sdk.
@@ -37,70 +55,96 @@
  *  @since 2.0
  */
 typedef NS_ENUM(NSUInteger, AFSDKPanelStyle) {
-    /** display on part of the screen so your app is visible behind */
+    /** Display on part of the screen so your app is visible behind */
     AFSDKPanelStyleDefault,
-    /** display on the whole screen (iPhone/iPod only) */
+    /** Display on the whole screen (iPhone/iPod only) */
     AFSDKPanelStyleFullscreen
 };
 
 
 /*!
- *  @enum EngageEnum Enum for deciding appsfire sdk content type
+ *  @brief Enum for deciding appsfire sdk content type.
  *  @since 2.0
  *
  *  @note Default displays by default the notifications, but the user can send a feedback too thanks to a button.
  *  'Feedback only' will directly display the feedback form, user won't be able to see notifications list.
  */
 typedef NS_ENUM(NSUInteger, AFSDKPanelContent) {
-    /** display notifications wall */
+    /** Display notifications wall */
     AFSDKPanelContentDefault,
-    /** display the feedback form only */
+    /** Display the feedback form only */
     AFSDKPanelContentFeedbackOnly
 };
 
 
 /*!
- *  @enum AdvertisingEnum Enum for specifying the modal type
+ *  @brief Enum for specifying the modal type.
  *  @since 2.1
  */
 typedef NS_ENUM(NSUInteger, AFAdSDKModalType) {
-    /**  */
+    /** A native fullscreen ad */
     AFAdSDKModalTypeSushi = 0,
-    /**  */
+    /** An interstitial, with experience similar to the task manager in iOS7, except it happens within the publisher app */
     AFAdSDKModalTypeUraMaki = 1
 };
 
 
 /*!
- *  @enum CommonEnum Enum for sdk error code.
+ *  @brief Enum for specifying the sashimi format.
+ *  @since 2.2
+ */
+typedef NS_ENUM(NSUInteger, AFAdSDKSashimiFormat) {
+    /**  */
+    AFAdSDKSashimiFormatMinimal = 0,
+    /**  */
+    AFAdSDKSashimiFormatExtended = 1
+};
+
+
+/*!
+ *  @brief Enum for specifying the ad availability.
+ *  @since 2.2
+ */
+typedef NS_ENUM(NSUInteger, AFAdSDKAdAvailability) {
+    /** Answer can't be given right now */
+    AFAdSDKAdAvailabilityPending = 0,
+    /** An ad is available right now */
+    AFAdSDKAdAvailabilityYes = 1,
+    /** An ad isn't available right now */
+    AFAdSDKAdAvailabilityNo = 2
+};
+
+
+/*!
+ *  @brief Enum for sdk error code.
  *  @since 2.0
  */
 typedef NS_ENUM(NSUInteger, AFSDKErrorCode) {
     
-    // general
-    /** unknown */
+    // General
+    /** Unknown */
     AFSDKErrorCodeUnknown,
-    /** library isn't initialized yet */
+    /** Library isn't initialized yet */
     AFSDKErrorCodeLibraryNotInitialized,
-    /** internet isn't reachable (and is required) */
+    /** Internet isn't reachable (and is required) */
     AFSDKErrorCodeInternetNotReachable,
-    /** you need to set the application delegate to proceed */
+    /** You need to set the application delegate to proceed */
     AFSDKErrorCodeNeedsApplicationDelegate,
     
-    // advertising sdk
-    /** no ad available */
+    // Advertising sdk
+    /** No ad available */
     AFSDKErrorCodeAdvertisingNoAd,
-    /** the request call isn't appropriate */
+    /** The request call isn't appropriate */
     AFSDKErrorCodeAdvertisingBadCall,
-    /** an ad is currently displayed for this format */
+    /** An ad is currently displayed for this format */
     AFSDKErrorCodeAdvertisingAlreadyDisplayed,
-    /** the request was canceled by the developer */
+    /** The request was canceled by the developer */
     AFSDKErrorCodeAdvertisingCanceledByDevelopper,
     
-    // engage sdk
-    /** the panel is already displayed */
+    // Engage sdk
+    /** The panel is already displayed */
     AFSDKErrorCodePanelAlreadyDisplayed,
-    /** the notification wasn't found */
+    /** The notification wasn't found */
     AFSDKErrorCodeOpenNotificationNotFound
     
 };

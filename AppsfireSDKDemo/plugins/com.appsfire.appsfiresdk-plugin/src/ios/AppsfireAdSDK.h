@@ -1,12 +1,14 @@
 /*!
  *  @header    AppsfireAdSDK.h
  *  @abstract  Appsfire Advertising SDK Header
- *  @version   2.1.0
+ *  @version   2.3.0
  */
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import "AppsfireSDKConstants.h"
+
+@class AFAdSDKSashimiView;
 
 /*!
  *  Advertising SDK protocol. Provides various events about library life and ads.
@@ -15,14 +17,26 @@
 
 @optional
 
+/** @name Library life
+ *  Methods about the general life of the library.
+ */
+
 /*!
  *  @brief Called when the library is initialized.
  */
 - (void)adUnitDidInitialize;
 
+
+/** @name Modal Ads
+ *  Methods serving modal ads purposes.
+ */
+
 /*!
  *  @brief Called when there is a modal ad available,
  *  even if there are some pending requests (before handling the requests queue).
+ *
+ *  @note You are responsible to check whether there is a modal ad available for the format you are displaying.
+ *
  */
 - (void)modalAdIsReadyForRequest;
 
@@ -65,6 +79,20 @@
  *  @brief Called when the modal ad was dismissed.
  */
 - (void)modalAdDidDisappear;
+
+
+/** @name Sashimi Ads
+ *  Methods serving sashimi ads purposes.
+ */
+
+/*!
+ *  @brief Called when there is a sashimi ad available.
+ *  @since 2.2
+ *
+ *  @note You are responsible to check whether there is a sashimi ad available for the format you are displaying.
+ *
+ */
+- (void)sashimiAdsWereReceived;
 
 @end
 
@@ -137,8 +165,8 @@
 + (void)setDebugModeEnabled:(BOOL)use;
 
 
-/** @name Modal Ad
- *  Methods for managing Modal Ad.
+/** @name Modal Ads
+ *  Methods for managing Modal Ads.
  */
 
 /*!
@@ -154,17 +182,28 @@
 + (void)requestModalAd:(AFAdSDKModalType)modalType withController:(UIViewController *)controller;
 
 /*!
- *  @brief Ask if ads are loaded and if there is at least one modal ad available
+ *  @brief Ask if ads are loaded and if there is at least one modal ad available.
+ *  @since 2.2
  *
- *  @note If ads aren't downloaded yet, then the method will return `NO`.
- *  To test the library, and then have a positive response, please use the "debug" mode.
+ *  @note If ads aren't downloaded yet, then the method will return `AFAdSDKAdAvailabilityPending`.
+ *  To test the library, and then have always have a positive response, please use the "debug" mode (see online documentation for more precisions).
  *
  *  @param modalType The kind of modal you want to check.
  *  Note that most of ads should be available for both formats.
  *
- *  @return `YES` if ads are loaded and if there is at least one modal ad available, `NO` otherwise.
+ *  @return `AFAdSDKAdAvailabilityPending` if ads aren't loaded yet, `AFAdSDKAdAvailabilityYes` and if there is at least one modal ad available, `AFAdSDKAdAvailabilityNo` otherwise.
  */
-+ (BOOL)isThereAModalAdAvailable:(AFAdSDKModalType)modalType;
++ (AFAdSDKAdAvailability)isThereAModalAdAvailableForType:(AFAdSDKModalType)modalType;
+
+/*!
+ *  @brief Force the dismissal of any modal ad currently being displayed on the screen.
+ *  @since 2.2.2
+ *
+ *  @note In the majority of cases, you shouldn't use this method. We highly recommend not to use this method if you aren't sure of the results. Please refer to the documentation or contact us if you have any doubt!
+ *
+ *  @return `YES` if a modal ad was dismissed, `NO` otherwise.
+ */
++ (BOOL)forceDismissalOfModalAd;
 
 /*!
  *  @brief Cancel any pending ad modal request you have made in the past.
@@ -182,15 +221,64 @@
 + (BOOL)isModalAdDisplayed;
 
 
-
-/** @name Deprecated
- *  Methods that you should stop using, and that will be removed in future release
+/** @name Sashimi Ads
+ *  Methods for sashimi Ads.
  */
 
-+ (NSString *)getAdUnitVersion __deprecated_msg("Since the merge with AppsfireSDK, we suggest you to use 'getAFSDKVersionInfo' of AppsfireSDK.");
+/*!
+ *  @brief Get the number of available sashimi ads.
+ *  @since 2.2
+ *
+ *  @note If ads aren't downloaded yet, then the method will return `0`.
+ *  To test the library, and then have a positive response, please use the "debug" mode.
+ *
+ *  @param format The kind of sashimi view you would like to get.
+ *
+ *  @return The number of available sashimi ads.
+ */
++ (NSUInteger)numberOfSashimiAdsAvailableForFormat:(AFAdSDKSashimiFormat)format;
 
-+ (void)requestModalAdWithController:(UIViewController *)controller __deprecated_msg("You can now specify the modal type. Please check 'requestModalAd:withController:' method.");
+/*!
+ *  @brief Get the number of available sashimi ads.
+ *  @since 2.2
+ *
+ *  @note If ads aren't downloaded yet, then the method will return `0`.
+ *  To test the library, and then have a positive response, please use the "debug" mode.
+ *
+ *  @param viewClass A subclass of `AFAdSDKSashimiView`. Please check the documentation for a good implementation.
+ *
+ *  @return The number of available sashimi ads.
+ */
++ (NSUInteger)numberOfSashimiAdsAvailableForSubclass:(Class)viewClass;
 
-+ (BOOL)isThereAModalAdAvailable __deprecated_msg("You can now specify the modal type. Please check 'isThereAModalAdAvailable:' method.");
+/*!
+ *  @brief Get a sashimi view based on a format.
+ *  @since 2.2
+ *
+ *  @param format The kind of sashimi view you would like to get.
+ *  @param controller The controller will be used as host to display the StoreKit. This parameter is optional, you can send `nil`.
+ *  @param error If a problem occured, the error object will be filled with a code and a description.
+ *
+ *  @return A view containing an ad which can be displayed right now. In case a problem occured, `nil` could be returned.
+ */
++ (AFAdSDKSashimiView *)sashimiViewForFormat:(AFAdSDKSashimiFormat)format withController:(UIViewController *)controller andError:(NSError **)error;
+
+/*!
+ *  @brief Get a sashimi view based on a subclass.
+ *  @since 2.2
+ *
+ *  @param viewClass A subclass of `AFAdSDKSashimiView`. Please check the documentation for a good implementation.
+ *  @param controller The controller will be used as host to display the StoreKit. This parameter is optional, you can send `nil`.
+ *  @param error If a problem occured, the error object will be filled with a code and a description.
+ *
+ *  @return An `UIView` containing an ad which can be displayed right now. In case a problem occured, `nil` could be returned.
+ */
++ (AFAdSDKSashimiView *)sashimiViewForSubclass:(Class)viewClass withController:(UIViewController *)controller andError:(NSError **)error;
+
+
+/** @name Deprecated Methods.
+ */
+
++ (BOOL)isThereAModalAdAvailable:(AFAdSDKModalType)modalType __deprecated_msg("This method is deprecated. You should use '+isThereAModalAdAvailableForType:' instead!");
 
 @end

@@ -26,7 +26,7 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "org.apache.cordova.console": "0.2.5",
-    "com.appsfire.appsfiresdk-plugin": "1.0.0"
+    "com.appsfire.appsfiresdk-plugin": "1.0.4"
 }
 // BOTTOM OF METADATA
 });
