@@ -4,33 +4,66 @@
         "uninstalled": []
     },
     "config_munge": {
-        "framework": {
-            "Accelerate.framework": {
-                "false": 1
+        "files": {
+            "framework": {
+                "parents": {
+                    "Accelerate.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "AdSupport.framework": [
+                        {
+                            "xml": "true",
+                            "count": 1
+                        }
+                    ],
+                    "CoreGraphics.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "QuartzCore.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "StoreKit.framework": [
+                        {
+                            "xml": "true",
+                            "count": 1
+                        }
+                    ],
+                    "SystemConfiguration.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "Security.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ]
+                }
             },
-            "AdSupport.framework": {
-                "true": 1
-            },
-            "CoreGraphics.framework": {
-                "false": 1
-            },
-            "QuartzCore.framework": {
-                "false": 1
-            },
-            "StoreKit.framework": {
-                "true": 1
-            },
-            "SystemConfiguration.framework": {
-                "false": 1
-            },
-            "Security.framework": {
-                "false": 1
-            }
-        },
-        "config.xml": {
-            "/*": {
-                "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>": 1,
-                "<feature name=\"AppsfireSDK\"><param name=\"ios-package\" value=\"CDVAppsfireSDK\" /></feature>": 1
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"AppsfireSDK\"><param name=\"ios-package\" value=\"CDVAppsfireSDK\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
             }
         }
     },

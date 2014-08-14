@@ -1,10 +1,14 @@
-
+/*!
+ *  @header    CDVAppsfireSDK.m
+ *  @abstract  Cordova Plugin for the Appsfire iOS SDK.
+ *  @version   1.0.5
+ */
 
 #import "CDVAppsfireSDK.h"
 
 static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificationDidFinishCallbackId";
 
-@interface CDVAppsfireSDK () <AppsfireSDKDelegate, AppsfireAdSDKDelegate>
+@interface CDVAppsfireSDK () <AppsfireEngageSDKDelegate, AppsfireAdSDKDelegate, AFAdSDKModalDelegate>
 
 - (UIColor *)colorWithRGBADictionary:(NSDictionary *)dict;
 
@@ -15,63 +19,57 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
 - (void)pluginInitialize {
     [super pluginInitialize];
     
-    [AppsfireSDK setDelegate:self];
+    [AppsfireEngageSDK setDelegate:self];
     [AppsfireAdSDK setDelegate:self];
 }
 
-#pragma mark -
-#pragma mark - Base SDK
+#pragma mark - Appsfire SDK
 
-- (void)sdk_connectWithApiKey:(CDVInvokedUrlCommand *)command {
+- (void)afsdk_connectWithParameters:(CDVInvokedUrlCommand *)command {
     CDVPluginResult *pluginResult;
     NSString *callbackId = command.callbackId;
-    NSArray* arguments = command.arguments;
+    NSArray *arguments = command.arguments;
     
-    // Arguments
-    NSString *apiKey = [arguments objectAtIndex:AFConnectWithAPIKey];
-    
-    if ([apiKey isKindOfClass:NSString.class]) {
-        if ([AppsfireSDK connectWithAPIKey:apiKey]) {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-            return;
-        }
+    // SDK Token
+    NSString *sdkToken = [arguments objectAtIndex:AFConnectWithParametersSDKToken];
+    if (![sdkToken isKindOfClass:NSString.class]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+        return;
     }
     
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-}
-
-- (void)sdk_setFeatures:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+    // Features
+    NSArray *features = [arguments objectAtIndex:AFConnectWithParametersFeatures];
     
-    // Arguments
-    NSArray *features = [arguments objectAtIndex:AFSetFeatures];
-    
-    AFSDKFeature activeFeatures = (AFSDKFeatureEngage | AFSDKFeatureMonetization | AFSDKFeatureTrack);
+    AFSDKFeature activeFeatures = (AFSDKFeatureEngage|AFSDKFeatureMonetization|AFSDKFeatureTrack);
     BOOL isEngageEnabled = NO;
     BOOL isMonetizeEnabled = NO;
     BOOL isTrackEnabled = NO;
     
-    if ([features isKindOfClass:NSArray.class]) {
-        for (NSString *feature in features) {
-            if ([feature respondsToSelector:@selector(isEqualToString:)]) {
-                
-                // Check if engage is enabled.
-                if ([feature isEqualToString:@"AFSDKFeatureEngage"]) {
-                    isEngageEnabled = YES;
-                }
-                
-                // Check if monetize is enabled.
-                if ([feature isEqualToString:@"AFSDKFeatureMonetization"]) {
-                    isMonetizeEnabled = YES;
-                }
-                
-                // Check if track is enabled.
-                if ([feature isEqualToString:@"AFSDKFeatureTrack"]) {
-                    isTrackEnabled = YES;
-                }
-            }
+    if (![features isKindOfClass:NSArray.class]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+        return;
+    }
+    
+    for (NSString *feature in features) {
+        if (![feature respondsToSelector:@selector(isEqualToString:)]) {
+            continue;
+        }
+        
+        // Check if engage is enabled.
+        if ([feature isEqualToString:@"AFSDKFeatureEngage"]) {
+            isEngageEnabled = YES;
+        }
+        
+        // Check if monetize is enabled.
+        if ([feature isEqualToString:@"AFSDKFeatureMonetization"]) {
+            isMonetizeEnabled = YES;
+        }
+        
+        // Check if track is enabled.
+        if ([feature isEqualToString:@"AFSDKFeatureTrack"]) {
+            isTrackEnabled = YES;
         }
     }
     
@@ -87,18 +85,37 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         activeFeatures ^= AFSDKFeatureTrack;
     }
     
-    [AppsfireSDK setFeatures:activeFeatures];
+    // Intialization.
+    NSError *error = [AppsfireSDK connectWithSDKToken:sdkToken features:activeFeatures parameters:nil];
+    if (error) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+        return;
+    }
+    
+    // Everything went fine.
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_isInitialized:(CDVInvokedUrlCommand *)command {
+- (void)afsdk_isInitialized:(CDVInvokedUrlCommand *)command {
     BOOL isInitialized = [AppsfireSDK isInitialized];
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isInitialized];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_registerPushToken:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afsdk_versionDescription:(CDVInvokedUrlCommand *)command {
+    NSString *versionDescription = [AppsfireSDK versionDescription];
+    NSString *callbackId = command.callbackId;
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:versionDescription];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
+#pragma mark - Appsfire Engage SDK
+
+- (void)afengagesdk_registerPushToken:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -111,13 +128,13 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK registerPushTokenString:pushToken];
+    [AppsfireEngageSDK registerPushTokenString:pushToken];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_handleBadgeCountLocally:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_handleBadgeCountLocally:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -130,14 +147,14 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK handleBadgeCountLocally:[handleBadgeCountLocally boolValue]];
+    [AppsfireEngageSDK handleBadgeCountLocally:[handleBadgeCountLocally boolValue]];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
     return;
 }
 
-- (void)sdk_handleBadgeCountLocallyAndRemotely:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_handleBadgeCountLocallyAndRemotely:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -150,16 +167,16 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK handleBadgeCountLocallyAndRemotely:[handleBadgeCountLocallyAndRemotely boolValue]];
+    [AppsfireEngageSDK handleBadgeCountLocallyAndRemotely:[handleBadgeCountLocallyAndRemotely boolValue]];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
     return;
 }
 
-- (void)sdk_presentPanel:(CDVInvokedUrlCommand *)command {
+- (void)afengagesdk_presentPanel:(CDVInvokedUrlCommand *)command {
     CDVPluginResult *pluginResult;
     NSString *callbackId = command.callbackId;
-    NSArray* arguments = command.arguments;
+    NSArray *arguments = command.arguments;
     
     // Arguments
     NSString *contentTypeString = [arguments objectAtIndex:AFPresentPanelContentType];
@@ -192,30 +209,30 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         styleType = AFSDKPanelStyleFullscreen;
     }
     
-    NSError *error = [AppsfireSDK presentPanelForContent:contentType withStyle:styleType];
+    NSError *error = [AppsfireEngageSDK presentPanelForContent:contentType withStyle:styleType];
     CDVCommandStatus commandStatus = error ? CDVCommandStatus_ERROR : CDVCommandStatus_OK;
     
     pluginResult = [CDVPluginResult resultWithStatus:commandStatus];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_dismissPanel:(CDVInvokedUrlCommand *)command {
-    if ([AppsfireSDK isDisplayed]) {
-        [AppsfireSDK dismissPanel];
+- (void)afengagesdk_dismissPanel:(CDVInvokedUrlCommand *)command {
+    if ([AppsfireEngageSDK isDisplayed]) {
+        [AppsfireEngageSDK dismissPanel];
     }
 }
 
-- (void)sdk_isDisplayed:(CDVInvokedUrlCommand *)command {
-    BOOL isDisplayed = [AppsfireSDK isDisplayed];
+- (void)afengagesdk_isDisplayed:(CDVInvokedUrlCommand *)command {
+    BOOL isDisplayed = [AppsfireEngageSDK isDisplayed];
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isDisplayed];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_openSDKNotification:(CDVInvokedUrlCommand *)command {
+- (void)afengagesdk_openSDKNotification:(CDVInvokedUrlCommand *)command {
     CDVPluginResult *pluginResult;
     NSString *callbackId = command.callbackId;
-    NSArray* arguments = command.arguments;
+    NSArray *arguments = command.arguments;
     
     // Arguments
     NSNumber *notificationId = [arguments objectAtIndex:AFNotificationId];
@@ -226,13 +243,13 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK openSDKNotificationID:notificationId.intValue];
+    [AppsfireEngageSDK openSDKNotificationID:notificationId.intValue];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_customizeColors:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_customizeColors:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     
     // Arguments
     NSDictionary *bgColorDic = [arguments objectAtIndex:AFBackgroundColor];
@@ -248,11 +265,11 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         textColor = [self colorWithRGBADictionary:textColorDic];
     }
     
-    [AppsfireSDK setBackgroundColor:bgColor textColor:textColor];
+    [AppsfireEngageSDK setBackgroundColor:bgColor textColor:textColor];
 }
 
-- (void)sdk_setCustomKeyValues:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_setCustomKeyValues:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -265,13 +282,13 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK setCustomKeysValues:customKeyValues];
+    [AppsfireEngageSDK setCustomKeysValues:customKeyValues];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_setUserEmail:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_setUserEmail:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -285,15 +302,15 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    BOOL isUserEmailSet = [AppsfireSDK setUserEmail:userEmail isModifiable:[isModifiable boolValue]];
+    BOOL isUserEmailSet = [AppsfireEngageSDK setUserEmail:userEmail isModifiable:[isModifiable boolValue]];
     CDVCommandStatus commandStatus = isUserEmailSet ? CDVCommandStatus_OK : CDVCommandStatus_ERROR;
     
     pluginResult = [CDVPluginResult resultWithStatus:commandStatus];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_showFeedbackButton:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afengagesdk_showFeedbackButton:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -306,73 +323,30 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         return;
     }
     
-    [AppsfireSDK setShowFeedbackButton:[showFeedBackButton boolValue]];
+    [AppsfireEngageSDK setShowFeedbackButton:[showFeedBackButton boolValue]];
     
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_getAFSDKVersionInfo:(CDVInvokedUrlCommand *)command {
-    NSString *sdkVersion = [AppsfireSDK getAFSDKVersionInfo];
-    NSString *callbackId = command.callbackId;
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:sdkVersion];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-}
-
-- (void)sdk_numberOfPendingNotifications:(CDVInvokedUrlCommand *)command {
-    NSInteger numberOfPendingNotifications = [AppsfireSDK numberOfPendingNotifications];
+- (void)afengagesdk_numberOfPendingNotifications:(CDVInvokedUrlCommand *)command {
+    int numberOfPendingNotifications = (int)[AppsfireEngageSDK numberOfPendingNotifications];
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:numberOfPendingNotifications];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)sdk_getSessionID:(CDVInvokedUrlCommand *)command {
-    NSString *sessionID = [AppsfireSDK getSessionID];
-    NSString *callbackId = command.callbackId;
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:sessionID];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-}
+#pragma mark - Appsfire Ad SDK
 
-- (void)sdk_resetCache:(CDVInvokedUrlCommand *)command {
-    [AppsfireSDK resetCache];
-}
-
-#pragma mark - AppsfireSDKDelegate
-
-- (void)openNotificationDidFinish:(BOOL)succeeded withError:(NSError *)error {
-    if (succeeded) {
-        [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_openNotificationDidFinishWithSuccess');"];
-    }
-    
-    else {
-        [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_openNotificationDidFinishWithFailure');"];
-    }
-}
-
-
-#pragma mark -
-#pragma mark - Ad SDK
-
-- (void)adsdk_prepare:(CDVInvokedUrlCommand *)command {
-    [AppsfireAdSDK prepare];
-}
-
-- (void)adsdk_isInitialized:(CDVInvokedUrlCommand *)command {
-    BOOL isInitialized = [AppsfireAdSDK isInitialized];
-    NSString *callbackId = command.callbackId;
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isInitialized];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-}
-
-- (void)adsdk_areAdsLoaded:(CDVInvokedUrlCommand *)command {
+- (void)afadsdk_areAdsLoaded:(CDVInvokedUrlCommand *)command {
     BOOL areAdsLoaded = [AppsfireAdSDK areAdsLoaded];
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:areAdsLoaded];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)adsdk_setUseInAppDownloadWhenPossible:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afadsdk_setUseInAppDownloadWhenPossible:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -390,8 +364,8 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)adsdk_setDebugModeEnabled:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afadsdk_setDebugModeEnabled:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult;
     
@@ -409,14 +383,13 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)adsdk_requestModalAd:(CDVInvokedUrlCommand *)command {
-    NSArray* arguments = command.arguments;
+- (void)afadsdk_requestModalAd:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     
     AFAdSDKModalType modalType = AFAdSDKModalTypeSushi;
     
     // Arguments
     NSString *modalTypeString = [arguments objectAtIndex:AFAdRequestModalType];
-    NSNumber *shouldUseTimer = [arguments objectAtIndex:AFAdRequestShouldUseTimer];
     
     // Modal type
     if ([modalTypeString isKindOfClass:NSString.class]) {
@@ -429,29 +402,11 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         }
     }
     
-    // Should use timer.
-    if (![shouldUseTimer isKindOfClass:NSNumber.class]) {
-        shouldUseTimer = @(0);
-    }
-    
-    // Showing a timer befor presenting the Ad.
-    if ([shouldUseTimer boolValue]) {
-        [[[AppsfireAdTimerView alloc] initWithCountdownStart:3] presentWithCompletion:^(BOOL accepted) {
-            if (accepted) {
-                [AppsfireAdSDK requestModalAd:modalType withController:self.viewController];
-            }
-        }];
-    }
-    
-    // Simply showing the Ad.
-    else {
-        [AppsfireAdSDK requestModalAd:modalType withController:self.viewController];
-    }
+    [AppsfireAdSDK requestModalAd:modalType withController:self.viewController withDelegate:self];
 }
 
-- (void)adsdk_isThereAModalAdAvailable:(CDVInvokedUrlCommand *)command {
-    
-    NSArray* arguments = command.arguments;
+- (void)afadsdk_isThereAModalAdAvailable:(CDVInvokedUrlCommand *)command {
+    NSArray *arguments = command.arguments;
     
     AFAdSDKModalType modalType = AFAdSDKModalTypeSushi;
     
@@ -476,45 +431,57 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)adsdk_cancelPendingAdModalRequest:(CDVInvokedUrlCommand *)command {
+- (void)afadsdk_cancelPendingAdModalRequest:(CDVInvokedUrlCommand *)command {
     [AppsfireAdSDK cancelPendingAdModalRequest];
 }
 
-- (void)adsdk_isModalAdDisplayed:(CDVInvokedUrlCommand *)command {
+- (void)afadsdk_isModalAdDisplayed:(CDVInvokedUrlCommand *)command {
     BOOL isModalAdDisplayed = [AppsfireAdSDK isModalAdDisplayed];
     NSString *callbackId = command.callbackId;
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isModalAdDisplayed];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
+#pragma mark - AppsfireEngageSDKDelegate
+
+- (void)openNotificationDidFinish:(BOOL)succeeded withError:(NSError *)error {
+    if (succeeded) {
+        [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afengagesdk_openNotificationDidFinishWithSuccess');"];
+    } else {
+        [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afengagesdk_openNotificationDidFinishWithFailure');"];
+    }
+}
+
 #pragma mark - AppsfireAdSDKDelegate
 
-- (void)adUnitDidInitialize {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_adUnitDidInitialize');"];
+- (void)modalAdsRefreshedAndAvailable {
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdsRefreshedAndAvailable');"];
 }
 
-- (void)modalAdIsReadyForRequest {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdIsReadyForRequest');"];
+- (void)modalAdsRefreshedAndNotAvailable {
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdsRefreshedAndNotAvailable');"];
 }
+
+#pragma mark - AFAdSDKModalDelegate
 
 - (void)modalAdRequestDidFailWithError:(NSError *)error {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdRequestDidFail');"];
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdRequestDidFail');"];
 }
 
 - (void)modalAdWillAppear {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdWillAppear');"];
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdWillAppear');"];
 }
 
 - (void)modalAdDidAppear {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdDidAppear');"];
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdDidAppear');"];
 }
 
 - (void)modalAdWillDisappear {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdWillDisappear');"];
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdWillDisappear');"];
 }
 
 - (void)modalAdDidDisappear {
-    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('adsdk_modalAdDidDisappear');"];
+    [self.commandDelegate evalJs:@"cordova.fireDocumentEvent('afadsdk_modalAdDidDisappear');"];
 }
 
 #pragma mark - UIColor

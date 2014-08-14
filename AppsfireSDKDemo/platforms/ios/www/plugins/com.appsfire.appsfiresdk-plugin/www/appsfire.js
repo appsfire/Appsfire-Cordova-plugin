@@ -6,135 +6,266 @@ var AppsfireSDK = function() {
     this.serviceName = "AppsfireSDK";
 };
 
-// Base SDK
 
-AppsfireSDK.prototype.sdk_connectWithApiKey = function(apiKey, successCallback, failureCallback) {
-    if (typeof(apiKey) != 'string') apiKey = '';
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_connectWithApiKey', [apiKey]);
-};
+// Appsfire SDK
 
-AppsfireSDK.prototype.sdk_setFeatures = function(features) {
+/**
+ * Initialize the Appsfire SDK.
+ *
+ * @method afsdk_connectWithParameters
+ * @param {String} sdkToken SDK Token.
+ * @param {Object} features The array containing the features. The available features are `AFSDKFeatureEngage` and `AFSDKFeatureMonetization`.
+ * @param {Callback(void)} successCallback Callback indicating that the SDK did initialize.
+ * @param {Callback(void)} failureCallback Callback indicating that the SDK did not initialize.
+ */
+AppsfireSDK.prototype.afsdk_connectWithParameters = function(sdkToken, features, successCallback, failureCallback) {
+    if (typeof(sdkToken) != 'string') sdkToken = '';
     if (typeof(features) != 'object') features = ['AFSDKFeatureEngage', 'AFSDKFeatureMonetization'];
-    exec(null, null, this.serviceName, 'sdk_setFeatures', [features]);
+    exec(successCallback, failureCallback, this.serviceName, 'afsdk_connectWithParameters', [sdkToken, features]);
 };
 
-AppsfireSDK.prototype.sdk_isInitialized = function(successCallback) {
-    return exec(successCallback, null, this.serviceName, 'sdk_isInitialized', []);
+/**
+ * SDK Initialization status.
+ *
+ * @param {Callback(isInitializedBoolean)} callback Callback giving the status of the initialization.
+ */
+AppsfireSDK.prototype.afsdk_isInitialized = function(callback) {
+    exec(callback, null, this.serviceName, 'afsdk_isInitialized', []);
 };
 
-AppsfireSDK.prototype.sdk_presentPanel = function(contenType, styleType, successCallback, failureCallback) {
-    if (typeof(contenType) != 'string') contentype = 'notifications';
-    if (typeof(styleType) != 'string') styleType = 'default';
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_presentPanel', [contenType, styleType]);
+/**
+ * Version description of the Appsfire SDK.
+ *
+ * @param {Callback(versionString)} callBack Callback giving the version description string.
+ */
+AppsfireSDK.prototype.afsdk_versionDescription = function(callback) {
+    exec(callback, null, this.serviceName, 'afsdk_versionDescription', []);
 };
 
-AppsfireSDK.prototype.sdk_dismissPanel = function() {
-    exec(null, null, this.serviceName, 'sdk_dismissPanel', []);
-};
+// Appsfire Engage SDK
 
-AppsfireSDK.prototype.sdk_isDisplayed = function(successCallback) {
-    exec(successCallback, null, this.serviceName, 'sdk_isDisplayed', []);
-};
-
-AppsfireSDK.prototype.sdk_registerPushToken = function(pushToken, successCallback, failureCallback) {
+/**
+ * Register the push token for APNS (Apple Push Notification Service).
+ *
+ * @param {String} pushToken String representation of the push token.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_registerPushToken = function(pushToken, successCallback, failureCallback) {
     if (typeof(pushToken) != 'string') pushToken = 0;
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_registerPushToken', [pushToken]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_registerPushToken', [pushToken]);
 };
 
-AppsfireSDK.prototype.sdk_handleBadgeCountLocally = function(locally, successCallback, failureCallback) {
+/**
+ * Handle the badge count for this app locally (only on the device and only while the app is alive).
+ *
+ * @param {Boolean} locally Boolean value to determine if the badge count should be handled locally.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_handleBadgeCountLocally = function(locally, successCallback, failureCallback) {
     if (typeof(locally) != 'boolean') locally = 0;
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_handleBadgeCountLocally', [locally]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_handleBadgeCountLocally', [locally]);
 };
 
-AppsfireSDK.prototype.sdk_handleBadgeCountLocallyAndRemotely = function(locallyAndRemotely, successCallback, failureCallback) {
+/**
+ * Handle the badge count for this app remotely (Appsfire Engage SDK will update the icon at all times, locally and remotely, even when app is closed).
+ *
+ * @param {Boolean} locallyAndRemotely Boolean value to determine if the badge count should be handled locally and remotely.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_handleBadgeCountLocallyAndRemotely = function(locallyAndRemotely, successCallback, failureCallback) {
     if (typeof(locallyAndRemotely) != 'boolean') locallyAndRemotely = 0;
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_handleBadgeCountLocallyAndRemotely', [locallyAndRemotely]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_handleBadgeCountLocallyAndRemotely', [locallyAndRemotely]);
 };
 
-AppsfireSDK.prototype.sdk_openSDKNotification = function(notificationId, successCallback, failureCallback) {
+/**
+ * Handle the badge count for this app remotely (Appsfire Engage SDK will update the icon at all times, locally and remotely, even when app is closed).
+ *
+ * @param {String} contentType String value corresponding to the type of the content displayed. Values can be `notifications` or `feedback`.
+ * @param {String} styleType String value corresponding to the display type style of the content. Values can be `default` or `fullscreen`.
+ * @param {Callback(void)} successCallback Callback indicating that the panel presented successfully.
+ * @param {Callback(void)} failureCallback Callback indicating that the panel failed to present.
+ */
+AppsfireSDK.prototype.afengagesdk_presentPanel = function(contentType, styleType, successCallback, failureCallback) {
+    if (typeof(contentType) != 'string') contentType = 'notifications';
+    if (typeof(styleType) != 'string') styleType = 'default';
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_presentPanel', [contentType, styleType]);
+};
+
+/**
+ * Closes the Notification Wall and/or Feedback Form
+ */
+AppsfireSDK.prototype.afengagesdk_dismissPanel = function() {
+    exec(null, null, this.serviceName, 'afengagesdk_dismissPanel', []);
+};
+
+/**
+ * Gives the display status of the panel.
+ *
+ * @param {Callback(isDisplayedBoolean)} callback Callback giving the display status of the panel.
+ */
+AppsfireSDK.prototype.afengagesdk_isDisplayed = function(callback) {
+    exec(callback, null, this.serviceName, 'afengagesdk_isDisplayed', []);
+};
+
+/**
+ * Opens the SDK to a specific notification ID.
+ *
+ * @param {Number} notificationId Number corresponding to the notification to be presented.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_openSDKNotification = function(notificationId, successCallback, failureCallback) {
     if (typeof(notificationId) != 'number') notificationId = 0;
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_openSDKNotification', [notificationId]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_openSDKNotification', [notificationId]);
 };
 
-AppsfireSDK.prototype.sdk_customizeColors = function(backgroundColor, textColor) {
+/**
+ * Opens the SDK to a specific notification ID.
+ *
+ * @param {Object} backgroundColor Hash object representation of the color applied to the background.
+ * @param {Object} textColor Hash object representation of the color applied to the text.
+ *
+ * @brief The Hash objects should look like this:
+ *    var backgroundColor = {
+ *      'r': '144', // value between 0 and 255
+ *      'g': '89',  // value between 0 and 255
+ *      'b': '55',  // value between 0 and 255
+ *      'a': '1.0'  // value between 0 and 1
+ *    }
+ */
+AppsfireSDK.prototype.afengagesdk_customizeColors = function(backgroundColor, textColor) {
     if (typeof(backgroundColor) != 'object') backgroundColor = '{}';
     if (typeof(textColor) != 'object') textColor = '{}';
-    exec(null, null, this.serviceName, 'sdk_customizeColors', [backgroundColor, textColor]);
+    exec(null, null, this.serviceName, 'afengagesdk_customizeColors', [backgroundColor, textColor]);
 };
 
-AppsfireSDK.prototype.sdk_setCustomKeyValues = function(customKeyValues, successCallback, failureCallback) {
+/**
+ * Send data to SDK in key/value pairs. Strings matching any of your [KEYS] will be replaced by the respective value you send.
+ *
+ * @param {Number} customKeyValues Number Hash object representation of the custom values sent to the API.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ *
+ * @brief The Hash objects should look like this:
+ *    var customKeyValues = {
+ *      "FIRSTNAME": "John",
+ *      "LASTNAME": "Doe",
+ *      "AGE": "42"
+ *    }
+ */
+AppsfireSDK.prototype.afengagesdk_setCustomKeyValues = function(customKeyValues, successCallback, failureCallback) {
     if (typeof(customKeyValues) != 'object') customKeyValues = '{}';
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_setCustomKeyValues', [customKeyValues]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_setCustomKeyValues', [customKeyValues]);
 };
 
-AppsfireSDK.prototype.sdk_setUserEmail = function(email, isModifiable, successCallback, failureCallback) {
+/**
+ * Preset user email.
+ *
+ * @param {String} email String corresponding to the email of the user.
+ * @param {Boolean} isModifiable Boolean wether the email can be modified by the user.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameters are valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameters are not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_setUserEmail = function(email, isModifiable, successCallback, failureCallback) {
     if (typeof(email) != 'string') email = '';
     if (typeof(isModifiable) != 'boolean') isModifiable = true;
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_setUserEmail', [email, isModifiable]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_setUserEmail', [email, isModifiable]);
 };
 
-AppsfireSDK.prototype.sdk_showFeedbackButton = function(showButton, successCallback, failureCallback) {
+/**
+ * Allow you to display or hide feedback button.
+ *
+ * @param {Boolean} showButton Boolean to tell if feedback button should be displayed or not. Default value is `true`.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afengagesdk_showFeedbackButton = function(showButton, successCallback, failureCallback) {
     if (typeof(showButton) != 'boolean') showButton = 'true';
-    exec(successCallback, failureCallback, this.serviceName, 'sdk_showFeedbackButton', [showButton]);
+    exec(successCallback, failureCallback, this.serviceName, 'afengagesdk_showFeedbackButton', [showButton]);
 };
 
-AppsfireSDK.prototype.sdk_getAFSDKVersionInfo = function(callback) {
-    exec(callback, null, this.serviceName, 'sdk_getAFSDKVersionInfo', []);
+/**
+ * Methods to get various information from the library.
+ *
+ * @param {Callback(numberOfNotifications)} callback Callback giving the number of notifications.
+ */
+AppsfireSDK.prototype.afengagesdk_numberOfPendingNotifications = function(callback) {
+    exec(callback, null, this.serviceName, 'afengagesdk_numberOfPendingNotifications', []);
 };
 
-AppsfireSDK.prototype.sdk_numberOfPendingNotifications = function(callback) {
-    exec(callback, null, this.serviceName, 'sdk_numberOfPendingNotifications', []);
+// Appsfire Ad SDK
+
+/**
+ * Ask if ads are loaded from the web service.
+ *
+ * @param {Callback(areAdsLoadedBoolean)} callback Callback giving the status of ads.
+ */
+AppsfireSDK.prototype.afadsdk_areAdsLoaded = function(callback) {
+    exec(callback, null, this.serviceName, 'afadsdk_areAdsLoaded', []);
 };
 
-AppsfireSDK.prototype.sdk_getSessionID = function(callback) {
-    exec(callback, null, this.serviceName, 'sdk_getSessionID', []);
-};
-
-AppsfireSDK.prototype.sdk_resetCache = function() {
-    exec(null, null, this.serviceName, 'sdk_resetCache', []);
-};
-
-// Ad SDK
-
-AppsfireSDK.prototype.adsdk_prepare = function() {
-    return exec(null, null, this.serviceName, 'adsdk_prepare', []);
-};
-
-AppsfireSDK.prototype.adsdk_isInitialized = function(successCallback) {
-    return exec(successCallback, null, this.serviceName, 'adsdk_isInitialized', []);
-};
-
-AppsfireSDK.prototype.adsdk_areAdsLoaded = function(successCallback) {
-    return exec(successCallback, null, this.serviceName, 'adsdk_areAdsLoaded', []);
-};
-
-AppsfireSDK.prototype.adsdk_setUseInAppDownloadWhenPossible = function(userInAppDownloadWhenPossible, successCallback, failureCallback) {
+/**
+ * Specify if the library should use the in-app overlay when possible.
+ *
+ * @param {Boolean} userInAppDownloadWhenPossible Boolean to tell if in-app overlay should be used. Default value is `true`.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afadsdk_setUseInAppDownloadWhenPossible = function(userInAppDownloadWhenPossible, successCallback, failureCallback) {
     if (typeof(userInAppDownloadWhenPossible) != 'boolean') userInAppDownloadWhenPossible = 'true';
-    exec(successCallback, failureCallback, this.serviceName, 'adsdk_setUseInAppDownloadWhenPossible', [userInAppDownloadWhenPossible]);
+    exec(successCallback, failureCallback, this.serviceName, 'afadsdk_setUseInAppDownloadWhenPossible', [userInAppDownloadWhenPossible]);
 };
 
-AppsfireSDK.prototype.adsdk_setDebugModeEnabled = function(debugModeEnabled, successCallback, failureCallback) {
+/**
+ * Specify if the library should be used in debug mode.
+ *
+ * @param {Boolean} debugModeEnabled to specify if the debug mode should be enabled. Default value is `false`.
+ * @param {Callback(void)} successCallback Callback indicating that the provided parameter is valid.
+ * @param {Callback(void)} failureCallback Callback indicating that the provided parameter is not valid.
+ */
+AppsfireSDK.prototype.afadsdk_setDebugModeEnabled = function(debugModeEnabled, successCallback, failureCallback) {
     if (typeof(debugModeEnabled) != 'boolean') debugModeEnabled = 'true';
-    exec(successCallback, failureCallback, this.serviceName, 'adsdk_setDebugModeEnabled', [debugModeEnabled]);
+    exec(successCallback, failureCallback, this.serviceName, 'afadsdk_setDebugModeEnabled', [debugModeEnabled]);
 };
 
-AppsfireSDK.prototype.adsdk_requestModalAd = function(modalType, shouldUseTimer) {
+/**
+ * Specify if the library should be used in debug mode.
+ *
+ * @param {Strong} modalType String corresponding to the type of the modal to be used when displaying the interstitial. Values can be `sushi` or `uramaki`.
+ */
+AppsfireSDK.prototype.afadsdk_requestModalAd = function(modalType) {
     if (typeof(modalType) != 'string') modalType = 'sushi';
-    if (typeof(shouldUseTimer) != 'boolean') shouldUseTimer = 'false';
-    exec(null, null, this.serviceName, 'adsdk_requestModalAd', [modalType, shouldUseTimer]);
+    exec(null, null, this.serviceName, 'afadsdk_requestModalAd', [modalType]);
 };
 
-AppsfireSDK.prototype.adsdk_isThereAModalAdAvailable = function(callback, modalType) {
+/**
+ * Ask if ads are loaded and if there is at least one modal ad available.
+ *
+ * @param {String} modalType String corresponding to the type of modal that needs to be checked.
+ * @param {Callback(isThereAModalAdAvailableBoolean)} callback Callback giving the status of the modal ad availability.
+ */
+AppsfireSDK.prototype.afadsdk_isThereAModalAdAvailable = function(modalType, callback) {
     if (typeof(modalType) != 'string') modalType = 'sushi';
-    exec(callback, null, this.serviceName, 'adsdk_isThereAModalAdAvailable', [modalType]);
+    exec(callback, null, this.serviceName, 'afadsdk_isThereAModalAdAvailable', [modalType]);
 };
 
-AppsfireSDK.prototype.adsdk_cancelPendingAdModalRequest = function() {
-    exec(null, null, this.serviceName, 'adsdk_cancelPendingAdModalRequest', []);
+/**
+ * Cancel any pending notification.
+ */
+AppsfireSDK.prototype.afadsdk_cancelPendingAdModalRequest = function() {
+    exec(null, null, this.serviceName, 'afadsdk_cancelPendingAdModalRequest', []);
 };
 
-AppsfireSDK.prototype.adsdk_isModalAdDisplayed = function(callback) {
-    exec(callback, null, this.serviceName, 'adsdk_isModalAdDisplayed', []);
+/**
+ * Check if there is any modal ad being displayed right now by the library.
+ *
+ * @param {Callback(isModalAdDisplayedBoolean)} callback Callback giving the status of the modal visibility.
+ */
+AppsfireSDK.prototype.afadsdk_isModalAdDisplayed = function(callback) {
+    exec(callback, null, this.serviceName, 'afadsdk_isModalAdDisplayed', []);
 };
 
 module.exports = AppsfireSDK;
