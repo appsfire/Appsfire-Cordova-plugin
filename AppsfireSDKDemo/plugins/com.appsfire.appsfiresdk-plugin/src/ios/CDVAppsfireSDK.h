@@ -1,7 +1,7 @@
 /*!
  *  @header    CDVAppsfireSDK.h
  *  @abstract  Cordova Plugin for the Appsfire iOS SDK.
- *  @version   1.0.5
+ *  @version   1.0.7
  */
 
 // Cordova
@@ -14,8 +14,9 @@
 #import "AppsfireEngageSDK+Additions.h"
 
 // Connection
-#define AFConnectWithParametersSDKToken 0
-#define AFConnectWithParametersFeatures 1
+#define AFConnectWithParametersSDKToken     0
+#define AFConnectWithParametersSecretKey    1
+#define AFConnectWithParametersFeatures     2
 
 // Presentation
 #define AFPresentPanelContentType       0

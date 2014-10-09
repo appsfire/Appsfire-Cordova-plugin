@@ -1,7 +1,7 @@
 /*!
  *  @header    CDVAppsfireSDK.m
  *  @abstract  Cordova Plugin for the Appsfire iOS SDK.
- *  @version   1.0.5
+ *  @version   1.0.7
  */
 
 #import "CDVAppsfireSDK.h"
@@ -33,6 +33,14 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     // SDK Token
     NSString *sdkToken = [arguments objectAtIndex:AFConnectWithParametersSDKToken];
     if (![sdkToken isKindOfClass:NSString.class]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+        return;
+    }
+    
+    // Secret Key
+    NSString *secretKey = [arguments objectAtIndex:AFConnectWithParametersSecretKey];
+    if (![secretKey isKindOfClass:NSString.class]) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
         return;
@@ -85,8 +93,8 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
         activeFeatures ^= AFSDKFeatureTrack;
     }
     
-    // Intialization.
-    NSError *error = [AppsfireSDK connectWithSDKToken:sdkToken features:activeFeatures parameters:nil];
+    // Intialization
+    NSError *error = [AppsfireSDK connectWithSDKToken:sdkToken secretKey:secretKey features:activeFeatures parameters:nil];
     if (error) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];

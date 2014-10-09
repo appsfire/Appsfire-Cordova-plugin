@@ -3,7 +3,7 @@ Appsire iOS SDK Cordova Plugin
 This document describes the installation and usage of the Cordova plugin for the Appsfire iOS SDK.
 
 ## Requirements
-- Appsfire SDK >= 2.4.0
+- Appsfire SDK >= 2.5.0
 - Cordova CLI >= 3.0
 
 ## Introduction
@@ -48,9 +48,13 @@ var af = new AppsfireSDK();
 // Set your SDK Token.
 var sdkToken = '';
 
+// Set your Secret Key.
+var sdkToken = '';
+
 // Connection to the API.
 af.afsdk_connectWithParameters(
   sdkToken,
+  secretKey,
   ['AFSDKFeatureEngage', 'AFSDKFeatureMonetization'],
   function() {
     console.log('SDK correctly initialized.');

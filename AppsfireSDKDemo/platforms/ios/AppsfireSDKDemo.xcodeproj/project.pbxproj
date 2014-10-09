@@ -28,6 +28,11 @@
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
 		5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEE5B34173C68D80009041E /* CoreLocation.framework */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
+		7B10951319E6931400F9AEDF /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 666EF11FB11A4B8E8C121828 /* Accelerate.framework */; };
+		7B10951419E6931C00F9AEDF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 912BFC6FADC84C458D786A68 /* StoreKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		7B10951519E6932300F9AEDF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F82A08FCAFFB44DCBC43B265 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		7B10951619E6932F00F9AEDF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B0C2DBA09FD43C7B46DEA91 /* SystemConfiguration.framework */; };
+		7B10951719E6934100F9AEDF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 772C0ECECF1440E08EE76DA2 /* QuartzCore.framework */; };
 		7BF2CA2C18C9FBC200CEC5DC /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BF2CA2B18C9FBC200CEC5DC /* Security.framework */; };
 		7E7966DE1810823500FA85AD /* icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D41810823500FA85AD /* icon-40.png */; };
 		7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D51810823500FA85AD /* icon-40@2x.png */; };
@@ -128,10 +133,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B10951719E6934100F9AEDF /* QuartzCore.framework in Frameworks */,
+				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
+				7B10951619E6932F00F9AEDF /* SystemConfiguration.framework in Frameworks */,
+				7B10951519E6932300F9AEDF /* AdSupport.framework in Frameworks */,
+				7B10951419E6931C00F9AEDF /* StoreKit.framework in Frameworks */,
+				7B10951319E6931400F9AEDF /* Accelerate.framework in Frameworks */,
 				7BF2CA2C18C9FBC200CEC5DC /* Security.framework in Frameworks */,
 				5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */,
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
-				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
 				5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */,
 				CE07F3C7D5A34D22A323ACA5 /* libAppsfireSDK.a in Frameworks */,

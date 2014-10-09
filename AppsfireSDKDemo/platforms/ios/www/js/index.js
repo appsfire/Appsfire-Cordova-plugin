@@ -95,10 +95,14 @@ var app = {
 
     // Set your SDK Token.
     var sdkToken = '';
+    
+    // Set your Secret Key.
+    var secretKey = '';
 
     // Connection to the API.
     af.afsdk_connectWithParameters(
       sdkToken,
+      secretKey,
       ['AFSDKFeatureEngage', 'AFSDKFeatureMonetization'],
       function() {
         console.log('SDK correctly initialized.');

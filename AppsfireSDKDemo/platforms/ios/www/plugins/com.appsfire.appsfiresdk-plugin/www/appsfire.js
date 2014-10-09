@@ -14,14 +14,16 @@ var AppsfireSDK = function() {
  *
  * @method afsdk_connectWithParameters
  * @param {String} sdkToken SDK Token.
+ * @param {String} secretKey Secret Key.
  * @param {Object} features The array containing the features. The available features are `AFSDKFeatureEngage` and `AFSDKFeatureMonetization`.
  * @param {Callback(void)} successCallback Callback indicating that the SDK did initialize.
  * @param {Callback(void)} failureCallback Callback indicating that the SDK did not initialize.
  */
-AppsfireSDK.prototype.afsdk_connectWithParameters = function(sdkToken, features, successCallback, failureCallback) {
+AppsfireSDK.prototype.afsdk_connectWithParameters = function(sdkToken, secretKey, features, successCallback, failureCallback) {
     if (typeof(sdkToken) != 'string') sdkToken = '';
+    if (typeof(secretKey) != 'string') secretKey = '';
     if (typeof(features) != 'object') features = ['AFSDKFeatureEngage', 'AFSDKFeatureMonetization'];
-    exec(successCallback, failureCallback, this.serviceName, 'afsdk_connectWithParameters', [sdkToken, features]);
+    exec(successCallback, failureCallback, this.serviceName, 'afsdk_connectWithParameters', [sdkToken, secretKey, features]);
 };
 
 /**
