@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="com.appsfire.appsfiresdk-plugin"
-    version="1.0.7">
+    version="1.0.8">
 
     <name>Appsfire SDK Plugin</name>
     <description>Cordova plugin for the Appsfire SDK</description>
@@ -45,6 +45,7 @@
         <framework src="Accelerate.framework" />
         <framework src="AdSupport.framework" weak="true" />
         <framework src="CoreGraphics.framework" />
+        <framework src="CoreText.framework" />
         <framework src="QuartzCore.framework" />
         <framework src="Security.framework" />
         <framework src="StoreKit.framework" weak="true" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="com.appsfire.appsfiresdk-plugin"
-    version="1.0.4">
+    version="1.0.8">
 
     <name>Appsfire SDK Plugin</name>
     <description>Cordova plugin for the Appsfire SDK</description>
@@ -33,13 +33,10 @@
 
         <!-- Appsfire SDK Header Files -->
         <header-file src="src/ios/AppsfireSDK.h" />
-        <header-file src="src/ios/AppsfireSDK+Additions.h" />
         <header-file src="src/ios/AppsfireAdSDK.h" />
+        <header-file src="src/ios/AppsfireEngageSDK.h" />
+        <header-file src="src/ios/AppsfireEngageSDK+Additions.h" />
         <header-file src="src/ios/AppsfireSDKConstants.h" />
-
-        <!-- Appsfire Timer View -->
-        <header-file src="src/ios/appsfireAdTimerView/AppsfireAdTimerView.h" />
-        <source-file src="src/ios/appsfireAdTimerView/AppsfireAdTimerView.m" />
 
         <!-- Appsfire SDK Static Library -->
         <source-file src="src/ios/libAppsfireSDK.a" framework="true" />
@@ -48,6 +45,7 @@
         <framework src="Accelerate.framework" />
         <framework src="AdSupport.framework" weak="true" />
         <framework src="CoreGraphics.framework" />
+        <framework src="CoreText.framework" />
         <framework src="QuartzCore.framework" />
         <framework src="Security.framework" />
         <framework src="StoreKit.framework" weak="true" />

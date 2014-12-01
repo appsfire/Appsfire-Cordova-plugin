@@ -1,7 +1,7 @@
 /*!
  *  @header    CDVAppsfireSDK.h
  *  @abstract  Cordova Plugin for the Appsfire iOS SDK.
- *  @version   1.0.7
+ *  @version   1.0.8
  */
 
 // Cordova
