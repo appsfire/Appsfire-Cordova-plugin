@@ -1,7 +1,7 @@
 /*!
  *  @header    CDVAppsfireSDK.m
  *  @abstract  Cordova Plugin for the Appsfire iOS SDK.
- *  @version   1.0.8
+ *  @version   1.0.9
  */
 
 #import "CDVAppsfireSDK.h"
@@ -49,10 +49,9 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     // Features
     NSArray *features = [arguments objectAtIndex:AFConnectWithParametersFeatures];
     
-    AFSDKFeature activeFeatures = (AFSDKFeatureEngage|AFSDKFeatureMonetization|AFSDKFeatureTrack);
+    AFSDKFeature activeFeatures = (AFSDKFeatureEngage|AFSDKFeatureMonetization);
     BOOL isEngageEnabled = NO;
     BOOL isMonetizeEnabled = NO;
-    BOOL isTrackEnabled = NO;
     
     if (![features isKindOfClass:NSArray.class]) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
@@ -75,10 +74,6 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
             isMonetizeEnabled = YES;
         }
         
-        // Check if track is enabled.
-        if ([feature isEqualToString:@"AFSDKFeatureTrack"]) {
-            isTrackEnabled = YES;
-        }
     }
     
     if (!isEngageEnabled) {
@@ -87,10 +82,6 @@ static NSString *const kOpenNotificationDidFinishCallbackId = @"kOpenNotificatio
     
     if (!isMonetizeEnabled) {
         activeFeatures ^= AFSDKFeatureMonetization;
-    }
-    
-    if (!isTrackEnabled) {
-        activeFeatures ^= AFSDKFeatureTrack;
     }
     
     // Intialization
