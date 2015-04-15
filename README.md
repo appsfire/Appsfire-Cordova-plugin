@@ -3,7 +3,7 @@ Appsire iOS SDK Cordova Plugin
 This document describes the installation and usage of the Cordova plugin for the Appsfire iOS SDK.
 
 ## Requirements
-- Appsfire SDK >= 2.6.0
+- Appsfire SDK >= 2.7.0
 - Cordova CLI >= 3.0
 
 ## Introduction
